@@ -1,0 +1,28 @@
+# Docker Compose para API de Gestão Escolar
+# Este arquivo define como a aplicação FastAPI será executada em container
+
+services:
+  app:
+    # Constrói a imagem usando o Dockerfile na pasta atual
+    build: .
+    
+    # Nome fixo para o container (facilita identificação no Docker Desktop)
+    container_name: api-gestao-escolar
+    
+    # Mapeia a porta 8000 do computador para a porta 8000 do container
+    # localhost:8000 (seu PC) -> container:8000 (FastAPI)
+    ports:
+      - "8000:8000"
+    
+    # Monta a pasta atual do projeto dentro do container em /app
+    # Permite hot-reload: mudanças no código aparecem imediatamente
+    # O uvicorn detecta mudanças e reinicia automaticamente a aplicação
+    volumes:
+      - .:/app
+      # Volume anônimo para preservar dependências instaladas no container
+      - /app/__pycache__
+    
+    # Variáveis de ambiente para otimizar hot-reload
+    environment:
+      - PYTHONUNBUFFERED=1  # Logs em tempo real
+      - WATCHFILES_FORCE_POLLING=1  # Força detecção de mudanças no Windows
